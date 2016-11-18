@@ -46,6 +46,8 @@ public class LayoutFileParser extends AbstractResourceParser {
 	private final String packageName;
 	private final ARSCFileParser resParser;
 	
+	private boolean loadAdditionalAttributes = false;
+	
 	private final static int TYPE_NUMBER_VARIATION_PASSWORD = 0x00000010;
 	private final static int TYPE_TEXT_VARIATION_PASSWORD = 0x00000080;
 	private final static int TYPE_TEXT_VARIATION_VISIBLE_PASSWORD = 0x00000090;
@@ -329,6 +331,8 @@ public class LayoutFileParser extends AbstractResourceParser {
 	private void parseLayoutAttributes(String layoutFile, SootClass layoutClass, AXmlNode rootNode) {
 		boolean isSensitive = false;
 		int id = -1;
+		Map<String, Object> additionalAttributes = loadAdditionalAttributes
+				? new HashMap<>() : null;
 		
 		for (Entry<String, AXmlAttribute<?>> entry : rootNode.getAttributes().entrySet()) {
 			if (entry.getKey() == null)
@@ -373,13 +377,17 @@ public class LayoutFileParser extends AbstractResourceParser {
 			else if (attr.getType() == AxmlVisitor.TYPE_STRING && attrName.equals("text")) {
 				// To avoid unrecognized attribute for "text" field
 			}
+			else if (loadAdditionalAttributes) {
+				additionalAttributes.put(attrName, attr.getValue());
+			}
 			else if (DEBUG && attr.getType() == AxmlVisitor.TYPE_STRING) {
 				System.out.println("Found unrecognized XML attribute:  " + attrName);
 			}
 		}
 		
 		// Register the new user control
-		addToMapSet(this.userControls, layoutFile, new LayoutControl(id, layoutClass, isSensitive));
+		addToMapSet(this.userControls, layoutFile, new LayoutControl(
+				id, layoutClass, isSensitive, additionalAttributes));
 	}
 
 	/**
@@ -424,6 +432,17 @@ public class LayoutFileParser extends AbstractResourceParser {
 	 */
 	public Map<String, Set<String>> getCallbackMethods() {
 		return this.callbackMethods;
+	}
+	
+	/**
+	 * Sets whether the parser should load all additional attributes as well. If
+	 * this option is disabled, it only loads those well-known attributes that
+	 * influence the data flow analysis.
+	 * @param loadAdditionalAttributes True to load all attributes present in the
+	 * layout XML files, false to only load the ones required for FlowDroid.
+	 */
+	public void setLoadAdditionalAttributes(boolean loadAdditionalAttributes) {
+		this.loadAdditionalAttributes = loadAdditionalAttributes;
 	}
 	
 }
