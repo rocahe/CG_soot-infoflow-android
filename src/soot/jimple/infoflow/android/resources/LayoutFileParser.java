@@ -332,7 +332,7 @@ public class LayoutFileParser extends AbstractResourceParser {
 		boolean isSensitive = false;
 		int id = -1;
 		Map<String, Object> additionalAttributes = loadAdditionalAttributes
-				? new HashMap<>() : null;
+				? new HashMap<String, Object>() : null;
 		
 		for (Entry<String, AXmlAttribute<?>> entry : rootNode.getAttributes().entrySet()) {
 			if (entry.getKey() == null)
