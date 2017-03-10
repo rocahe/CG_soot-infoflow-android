@@ -344,7 +344,12 @@ public class ARSCFileParser extends AbstractResourceParser {
 	 * with a configuration (which may be the default one).
 	 */
 	public class ResConfig {
+		private ResTable_Config config;
 		private List<AbstractResource> resources = new ArrayList<AbstractResource>();
+		
+		public ResTable_Config getConfig() {
+			return config;
+		}
 
 		public List<AbstractResource> getResources() {
 			return this.resources;
@@ -824,7 +829,7 @@ public class ARSCFileParser extends AbstractResourceParser {
 	/**
 	 * Describes a particular resource configuration.
 	 */
-	protected class ResTable_Config {
+	public class ResTable_Config {
 		/**
 		 * Number of bytes in this structure
 		 */
@@ -870,6 +875,76 @@ public class ARSCFileParser extends AbstractResourceParser {
 		
 		char[] localeScript = new char[4];	// char[4]
 		char[] localeVariant = new char[8];	// char[8]
+		public int getSize() {
+			return size;
+		}
+		public int getMmc() {
+			return mmc;
+		}
+		public int getMnc() {
+			return mnc;
+		}
+		public String getLanguage() {
+			return new String(language);
+		}
+		public String getCountry() {
+			return new String(country);
+		}
+		public int getOrientation() {
+			return orientation;
+		}
+		public int getTouchscreen() {
+			return touchscreen;
+		}
+		public int getDensity() {
+			return density;
+		}
+		public int getKeyboard() {
+			return keyboard;
+		}
+		public int getNavigation() {
+			return navigation;
+		}
+		public int getInputFlags() {
+			return inputFlags;
+		}
+		public int getInputPad0() {
+			return inputPad0;
+		}
+		public int getScreenWidth() {
+			return screenWidth;
+		}
+		public int getScreenHeight() {
+			return screenHeight;
+		}
+		public int getSdkVersion() {
+			return sdkVersion;
+		}
+		public int getMinorVersion() {
+			return minorVersion;
+		}
+		public int getScreenLayout() {
+			return screenLayout;
+		}
+		public int getUiMode() {
+			return uiMode;
+		}
+		public int getSmallestScreenWidthDp() {
+			return smallestScreenWidthDp;
+		}
+		public int getScreenWidthDp() {
+			return screenWidthDp;
+		}
+		public int getScreenHeightDp() {
+			return screenHeightDp;
+		}
+		public String getLocaleScript() {
+			return new String(localeScript);
+		}
+		public String getLocaleVariant() {
+			return new String(localeVariant);
+		}
+		
 	}
 	
 	/**
@@ -1159,6 +1234,7 @@ public class ARSCFileParser extends AbstractResourceParser {
 						if (resType == null)
 							throw new RuntimeException("Reference to undeclared type found");
 						ResConfig config = new ResConfig();
+						config.config = typeTable.config;
 						resType.configurations.add(config);
 						
 						// Read the table entries
