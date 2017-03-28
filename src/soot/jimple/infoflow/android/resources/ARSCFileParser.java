@@ -1283,12 +1283,18 @@ public class ARSCFileParser extends AbstractResourceParser {
 							else
 								res.resourceName = "<INVALID RESOURCE>";
 							
-							AbstractResource r = resType.getResourceByName(res.resourceName);
-							if (r != null)
-								res.resourceID = r.resourceID;
-							if (res.resourceID <= 0)
+							if (res.resourceName != null && res.resourceName.length() > 0) {
+								// Some obfuscated resources do only contain an empty string as resource name
+								// -> We only need to check the name if it is really present
+								AbstractResource r = resType.getResourceByName(res.resourceName);
+								if (r != null) {
+									res.resourceID = r.resourceID;
+								}
+							}
+							if (res.resourceID <= 0) {
 								res.resourceID = (packageTable.id << 24)
 										+ (typeTable.id << 16) + resourceIdx;
+							}
 							config.resources.add(res);
 							resourceIdx++;
 						}
